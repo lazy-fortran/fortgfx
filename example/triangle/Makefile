@@ -1,5 +1,5 @@
-# Probe build until fortgpu becomes an fpm package.
-BUILD ?= /mnt/storage/build/fortgpu-triangle
+# Probe build until fortgfx becomes an fpm package.
+BUILD ?= /mnt/storage/build/fortgfx-triangle
 FC = gfortran
 FFLAGS ?= -O2 -g -Wall -Wno-unused-dummy-argument -fimplicit-none
 
