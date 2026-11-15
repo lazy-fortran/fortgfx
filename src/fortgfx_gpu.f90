@@ -707,6 +707,9 @@ contains
         if (g%textures(id)%width == 0) return
         bytes = int(size(rgba), c_int64_t)
         if (bytes == 0) return
+        ! The first upload after a frame waits for it: that frame's copies may
+        ! still read the staging buffer this one starts to fill again.
+        if (g%staging_used == 0) call wait_idle(g)
         offset = 4 * ((g%staging_used + 3) / 4)
         if (offset + bytes > g%staging%size) then
             ! The staging buffer only grows between frames, with the GPU idle.
