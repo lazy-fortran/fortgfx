@@ -1,4 +1,4 @@
-module xcb
+module fortgfx_xcb
     !! The few libxcb calls an X11 window needs, bound directly.
     use iso_c_binding
     implicit none
@@ -151,7 +151,7 @@ contains
             call c_f_pointer(p, b, [32])
             kind = iand(int(b(1)), 127)
             select case (kind)
-            case (2)  ! KeyPress: Escape (9) or q (24) on the evdev keymap
+            case (2) ! KeyPress: Escape (9) or q (24) on the evdev keymap
                 if (byte(b, 1) == 9 .or. byte(b, 1) == 24) ev = EV_QUIT
             case (22) ! ConfigureNotify
                 w = byte(b, 20) + 256 * byte(b, 21)
@@ -200,4 +200,4 @@ contains
         u32 = transfer(b(off + 1:off + 4), u32)
     end function u32
 
-end module xcb
+end module fortgfx_xcb

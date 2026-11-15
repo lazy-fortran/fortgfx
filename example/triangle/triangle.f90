@@ -1,7 +1,7 @@
 module triangle_state
     !! Vulkan objects of the running example and the functions it calls.
     use iso_c_binding
-    use vk
+    use fortgfx_vulkan
     implicit none
     public
 
@@ -468,8 +468,8 @@ program triangle
     !! A spinning colour triangle in an X11 window, drawn with Vulkan from Fortran.
     !! Escape, q or closing the window ends it.
     use iso_c_binding, only: c_int
-    use vk, only: vk_open_loader, VK_SUCCESS
-    use xcb, only: xcb_window_t, window_open, window_poll, window_close, EV_QUIT, EV_RESIZE
+    use fortgfx_vulkan, only: vk_open_loader, VK_SUCCESS
+    use fortgfx_xcb, only: xcb_window_t, window_open, window_poll, window_close, EV_QUIT, EV_RESIZE
     use triangle_state
     implicit none
     type(xcb_window_t) :: win

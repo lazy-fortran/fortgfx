@@ -1,4 +1,4 @@
-module vk
+module fortgfx_vulkan
     !! The Vulkan 1.3 subset the triangle needs. The loader is opened at run time,
     !! so a machine without Vulkan reports it instead of failing to start.
     use iso_c_binding
@@ -577,4 +577,4 @@ contains
         error stop what // " failed with VkResult " // trim(code)
     end subroutine vk_check
 
-end module vk
+end module fortgfx_vulkan
