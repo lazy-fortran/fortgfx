@@ -46,6 +46,28 @@ program test_vulkan_layout
     type(VkRenderingInfo) :: v36
     type(VkSubmitInfo) :: v37
     type(VkPresentInfoKHR) :: v38
+    type(VkBufferCreateInfo) :: v39
+    type(VkMemoryRequirements) :: v40
+    type(VkMemoryAllocateInfo) :: v41
+    type(VkMemoryType) :: v42
+    type(VkMemoryHeap) :: v43
+    type(VkPhysicalDeviceMemoryProperties) :: v44
+    type(VkImageCreateInfo) :: v45
+    type(VkSamplerCreateInfo) :: v46
+    type(VkDescriptorSetLayoutBinding) :: v47
+    type(VkDescriptorSetLayoutCreateInfo) :: v48
+    type(VkDescriptorPoolSize) :: v49
+    type(VkDescriptorPoolCreateInfo) :: v50
+    type(VkDescriptorSetAllocateInfo) :: v51
+    type(VkDescriptorBufferInfo) :: v52
+    type(VkDescriptorImageInfo) :: v53
+    type(VkWriteDescriptorSet) :: v54
+    type(VkBufferImageCopy) :: v55
+    type(VkVertexInputBindingDescription) :: v56
+    type(VkVertexInputAttributeDescription) :: v57
+    type(VkImageSubresourceLayers) :: v58
+    type(VkExtent3D) :: v59
+    type(VkOffset3D) :: v60
     integer :: failures = 0
 
     call expect("VkExtent2D", c_sizeof(v0), 8)
@@ -87,6 +109,28 @@ program test_vulkan_layout
     call expect("VkRenderingInfo", c_sizeof(v36), 72)
     call expect("VkSubmitInfo", c_sizeof(v37), 72)
     call expect("VkPresentInfoKHR", c_sizeof(v38), 64)
+    call expect("VkBufferCreateInfo", c_sizeof(v39), 56)
+    call expect("VkMemoryRequirements", c_sizeof(v40), 24)
+    call expect("VkMemoryAllocateInfo", c_sizeof(v41), 32)
+    call expect("VkMemoryType", c_sizeof(v42), 8)
+    call expect("VkMemoryHeap", c_sizeof(v43), 16)
+    call expect("VkPhysicalDeviceMemoryProperties", c_sizeof(v44), 520)
+    call expect("VkImageCreateInfo", c_sizeof(v45), 88)
+    call expect("VkSamplerCreateInfo", c_sizeof(v46), 80)
+    call expect("VkDescriptorSetLayoutBinding", c_sizeof(v47), 24)
+    call expect("VkDescriptorSetLayoutCreateInfo", c_sizeof(v48), 32)
+    call expect("VkDescriptorPoolSize", c_sizeof(v49), 8)
+    call expect("VkDescriptorPoolCreateInfo", c_sizeof(v50), 40)
+    call expect("VkDescriptorSetAllocateInfo", c_sizeof(v51), 40)
+    call expect("VkDescriptorBufferInfo", c_sizeof(v52), 24)
+    call expect("VkDescriptorImageInfo", c_sizeof(v53), 24)
+    call expect("VkWriteDescriptorSet", c_sizeof(v54), 64)
+    call expect("VkBufferImageCopy", c_sizeof(v55), 56)
+    call expect("VkVertexInputBindingDescription", c_sizeof(v56), 12)
+    call expect("VkVertexInputAttributeDescription", c_sizeof(v57), 16)
+    call expect("VkImageSubresourceLayers", c_sizeof(v58), 16)
+    call expect("VkExtent3D", c_sizeof(v59), 12)
+    call expect("VkOffset3D", c_sizeof(v60), 12)
     if (failures > 0) error stop 1
     write (*, '(a)') "Vulkan struct sizes match vulkan_core.h"
 

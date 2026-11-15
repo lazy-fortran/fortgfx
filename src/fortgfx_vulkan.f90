@@ -299,6 +299,145 @@ module fortgfx_vulkan
         type(c_ptr) :: swapchains = c_null_ptr, indices = c_null_ptr, results = c_null_ptr
     end type
 
+
+    integer(c_int), parameter :: ST_MEMORY_ALLOCATE_INFO = 5, ST_BUFFER_CREATE_INFO = 12, &
+        ST_IMAGE_CREATE_INFO = 14, ST_SAMPLER_CREATE_INFO = 31, &
+        ST_DESCRIPTOR_SET_LAYOUT_CREATE_INFO = 32, ST_DESCRIPTOR_POOL_CREATE_INFO = 33, &
+        ST_DESCRIPTOR_SET_ALLOCATE_INFO = 34, ST_WRITE_DESCRIPTOR_SET = 35
+
+    type, bind(C) :: VkExtent3D
+        integer(c_int32_t) :: width = 0, height = 0, depth = 1
+    end type
+    type, bind(C) :: VkOffset3D
+        integer(c_int32_t) :: x = 0, y = 0, z = 0
+    end type
+    type, bind(C) :: VkBufferCreateInfo
+        integer(c_int) :: s_type = ST_BUFFER_CREATE_INFO
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int32_t) :: flags = 0
+        integer(c_int64_t) :: size = 0
+        integer(c_int32_t) :: usage = 0
+        integer(c_int) :: sharing = 0
+        integer(c_int32_t) :: family_count = 0
+        type(c_ptr) :: families = c_null_ptr
+    end type
+    type, bind(C) :: VkMemoryRequirements
+        integer(c_int64_t) :: size = 0, alignment = 0
+        integer(c_int32_t) :: type_bits = 0
+    end type
+    type, bind(C) :: VkMemoryAllocateInfo
+        integer(c_int) :: s_type = ST_MEMORY_ALLOCATE_INFO
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int64_t) :: size = 0
+        integer(c_int32_t) :: type_index = 0
+    end type
+    type, bind(C) :: VkMemoryType
+        integer(c_int32_t) :: flags = 0, heap = 0
+    end type
+    type, bind(C) :: VkMemoryHeap
+        integer(c_int64_t) :: size = 0
+        integer(c_int32_t) :: flags = 0
+    end type
+    type, bind(C) :: VkPhysicalDeviceMemoryProperties
+        integer(c_int32_t) :: type_count = 0
+        type(VkMemoryType) :: types(32)
+        integer(c_int32_t) :: heap_count = 0
+        type(VkMemoryHeap) :: heaps(16)
+    end type
+    type, bind(C) :: VkImageCreateInfo
+        integer(c_int) :: s_type = ST_IMAGE_CREATE_INFO
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int32_t) :: flags = 0
+        integer(c_int) :: image_type = 1, format = 0
+        type(VkExtent3D) :: extent
+        integer(c_int32_t) :: mip_levels = 1, array_layers = 1, samples = 1
+        integer(c_int) :: tiling = 0
+        integer(c_int32_t) :: usage = 0
+        integer(c_int) :: sharing = 0
+        integer(c_int32_t) :: family_count = 0
+        type(c_ptr) :: families = c_null_ptr
+        integer(c_int) :: initial_layout = 0
+    end type
+    type, bind(C) :: VkSamplerCreateInfo
+        integer(c_int) :: s_type = ST_SAMPLER_CREATE_INFO
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int32_t) :: flags = 0
+        integer(c_int) :: mag_filter = 0, min_filter = 0, mipmap_mode = 0, address_u = 2, &
+            address_v = 2, address_w = 2
+        real(c_float) :: mip_lod_bias = 0
+        integer(c_int32_t) :: anisotropy_enable = 0
+        real(c_float) :: max_anisotropy = 1
+        integer(c_int32_t) :: compare_enable = 0
+        integer(c_int) :: compare_op = 0
+        real(c_float) :: min_lod = 0, max_lod = 0
+        integer(c_int) :: border_color = 0
+        integer(c_int32_t) :: unnormalized = 0
+    end type
+    type, bind(C) :: VkDescriptorSetLayoutBinding
+        integer(c_int32_t) :: binding = 0
+        integer(c_int) :: descriptor_type = 0
+        integer(c_int32_t) :: count = 1, stages = 0
+        type(c_ptr) :: immutable_samplers = c_null_ptr
+    end type
+    type, bind(C) :: VkDescriptorSetLayoutCreateInfo
+        integer(c_int) :: s_type = ST_DESCRIPTOR_SET_LAYOUT_CREATE_INFO
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int32_t) :: flags = 0, binding_count = 0
+        type(c_ptr) :: bindings = c_null_ptr
+    end type
+    type, bind(C) :: VkDescriptorPoolSize
+        integer(c_int) :: descriptor_type = 0
+        integer(c_int32_t) :: count = 0
+    end type
+    type, bind(C) :: VkDescriptorPoolCreateInfo
+        integer(c_int) :: s_type = ST_DESCRIPTOR_POOL_CREATE_INFO
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int32_t) :: flags = 0, max_sets = 0, size_count = 0
+        type(c_ptr) :: sizes = c_null_ptr
+    end type
+    type, bind(C) :: VkDescriptorSetAllocateInfo
+        integer(c_int) :: s_type = ST_DESCRIPTOR_SET_ALLOCATE_INFO
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int64_t) :: pool = 0
+        integer(c_int32_t) :: count = 1
+        type(c_ptr) :: layouts = c_null_ptr
+    end type
+    type, bind(C) :: VkDescriptorBufferInfo
+        integer(c_int64_t) :: buffer = 0, offset = 0, range = 0
+    end type
+    type, bind(C) :: VkDescriptorImageInfo
+        integer(c_int64_t) :: sampler = 0, view = 0
+        integer(c_int) :: layout = 0
+    end type
+    type, bind(C) :: VkWriteDescriptorSet
+        integer(c_int) :: s_type = ST_WRITE_DESCRIPTOR_SET
+        type(c_ptr) :: next = c_null_ptr
+        integer(c_int64_t) :: dst_set = 0
+        integer(c_int32_t) :: dst_binding = 0, dst_element = 0, count = 1
+        integer(c_int) :: descriptor_type = 0
+        type(c_ptr) :: image_info = c_null_ptr, buffer_info = c_null_ptr, &
+            texel_view = c_null_ptr
+    end type
+    type, bind(C) :: VkImageSubresourceLayers
+        integer(c_int32_t) :: aspect = 1, mip = 0, base_layer = 0, layers = 1
+    end type
+    type, bind(C) :: VkBufferImageCopy
+        integer(c_int64_t) :: offset = 0
+        integer(c_int32_t) :: row_length = 0, image_height = 0
+        type(VkImageSubresourceLayers) :: subresource
+        type(VkOffset3D) :: image_offset
+        type(VkExtent3D) :: image_extent
+    end type
+    type, bind(C) :: VkVertexInputBindingDescription
+        integer(c_int32_t) :: binding = 0, stride = 0
+        integer(c_int) :: input_rate = 0
+    end type
+    type, bind(C) :: VkVertexInputAttributeDescription
+        integer(c_int32_t) :: location = 0, binding = 0
+        integer(c_int) :: format = 0
+        integer(c_int32_t) :: offset = 0
+    end type
+
     abstract interface
         integer(c_int) function fn_create_instance(info, alloc, instance) bind(C)
             import
@@ -526,6 +665,116 @@ module fortgfx_vulkan
             import
             type(c_ptr), value :: instance, alloc
             integer(c_int64_t), value :: surface
+        end subroutine
+
+        integer(c_int) function fn_create_handle(device, info, alloc, handle) bind(C)
+            !! vkCreateBuffer, vkCreateImage, vkCreateSampler, vkCreateDescriptorSetLayout,
+            !! vkCreateDescriptorPool: an info structure in, a 64-bit handle out.
+            import
+            type(c_ptr), value :: device, info, alloc
+            integer(c_int64_t), intent(out) :: handle
+        end function
+        subroutine fn_memory_requirements(device, handle, req) bind(C)
+            import
+            type(c_ptr), value :: device
+            integer(c_int64_t), value :: handle
+            type(VkMemoryRequirements), intent(out) :: req
+        end subroutine
+        integer(c_int) function fn_allocate_memory(device, info, alloc, memory) bind(C)
+            import
+            type(c_ptr), value :: device, alloc
+            type(VkMemoryAllocateInfo), intent(in) :: info
+            integer(c_int64_t), intent(out) :: memory
+        end function
+        integer(c_int) function fn_bind_memory(device, handle, memory, offset) bind(C)
+            import
+            type(c_ptr), value :: device
+            integer(c_int64_t), value :: handle, memory, offset
+        end function
+        integer(c_int) function fn_map_memory(device, memory, offset, size, flags, data) bind(C)
+            import
+            type(c_ptr), value :: device
+            integer(c_int64_t), value :: memory, offset, size
+            integer(c_int32_t), value :: flags
+            type(c_ptr), intent(out) :: data
+        end function
+        subroutine fn_memory_properties(pd, props) bind(C)
+            import
+            type(c_ptr), value :: pd
+            type(VkPhysicalDeviceMemoryProperties), intent(out) :: props
+        end subroutine
+        integer(c_int) function fn_allocate_descriptor_sets(device, info, sets) bind(C)
+            import
+            type(c_ptr), value :: device
+            type(VkDescriptorSetAllocateInfo), intent(in) :: info
+            integer(c_int64_t), intent(out) :: sets
+        end function
+        subroutine fn_update_descriptor_sets(device, nwrite, writes, ncopy, copies) bind(C)
+            import
+            type(c_ptr), value :: device, copies
+            integer(c_int32_t), value :: nwrite, ncopy
+            type(VkWriteDescriptorSet), intent(in) :: writes
+        end subroutine
+        subroutine fn_cmd_bind_descriptor_sets(buffer, bind_point, layout, first, count, sets, &
+                ndyn, dyn) bind(C)
+            import
+            type(c_ptr), value :: buffer, dyn
+            integer(c_int), value :: bind_point
+            integer(c_int64_t), value :: layout
+            integer(c_int32_t), value :: first, count, ndyn
+            integer(c_int64_t), intent(in) :: sets
+        end subroutine
+        subroutine fn_cmd_bind_vertex_buffers(buffer, first, count, buffers, offsets) bind(C)
+            import
+            type(c_ptr), value :: buffer
+            integer(c_int32_t), value :: first, count
+            integer(c_int64_t), intent(in) :: buffers, offsets
+        end subroutine
+        subroutine fn_cmd_bind_index_buffer(buffer, index_buffer, offset, index_type) bind(C)
+            import
+            type(c_ptr), value :: buffer
+            integer(c_int64_t), value :: index_buffer, offset
+            integer(c_int), value :: index_type
+        end subroutine
+        subroutine fn_cmd_draw_indexed(buffer, count, instances, first, offset, first_instance) &
+                bind(C)
+            import
+            type(c_ptr), value :: buffer
+            integer(c_int32_t), value :: count, instances, first, first_instance
+            integer(c_int32_t), value :: offset
+        end subroutine
+        subroutine fn_cmd_copy_buffer_image(buffer, src, dst, layout, count, regions) bind(C)
+            !! vkCmdCopyBufferToImage: buffer, image, layout of the image.
+            import
+            type(c_ptr), value :: buffer
+            integer(c_int64_t), value :: src, dst
+            integer(c_int), value :: layout
+            integer(c_int32_t), value :: count
+            type(VkBufferImageCopy), intent(in) :: regions
+        end subroutine
+        subroutine fn_cmd_copy_image_buffer(buffer, image, layout, dst, count, regions) bind(C)
+            import
+            type(c_ptr), value :: buffer
+            integer(c_int64_t), value :: image, dst
+            integer(c_int), value :: layout
+            integer(c_int32_t), value :: count
+            type(VkBufferImageCopy), intent(in) :: regions
+        end subroutine
+        integer(c_int) function fn_free_descriptor_sets(device, pool, count, sets) bind(C)
+            import
+            type(c_ptr), value :: device
+            integer(c_int64_t), value :: pool
+            integer(c_int32_t), value :: count
+            integer(c_int64_t), intent(in) :: sets(*)
+        end function
+        integer(c_int) function fn_queue_wait_idle(queue) bind(C)
+            import
+            type(c_ptr), value :: queue
+        end function
+        subroutine fn_unmap_memory(device, memory) bind(C)
+            import
+            type(c_ptr), value :: device
+            integer(c_int64_t), value :: memory
         end subroutine
         type(c_funptr) function fn_get_proc(instance, name) bind(C)
             import

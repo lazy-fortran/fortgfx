@@ -15,11 +15,33 @@ text, images and 3D meshes, drawn by
 FortUI, fortplot and fortterm draw through it. OpenGL and WebGPU are
 deliberately not used.
 
-Status: probe. `example/triangle` draws a spinning colour triangle in an X11
-window through libxcb and Vulkan 1.3 dynamic rendering, in Fortran only.
+The frame is a list of batches (`fortgfx_list`): instanced shapes (rounded
+rectangles with border or checker pattern, line segments with a colour
+gradient, discs), textured triangles (glyphs, images) and retained shape
+layers, each with a clip rectangle and a view. `fortgfx_gpu` draws it with
+Vulkan 1.3 into an X11 window or an offscreen image; `fortgfx_cpu` draws it
+into memory by the same rules (fragments at pixel centres, the same distance
+functions, premultiplied blending in 8-bit values).
+
+Status: the GPU and CPU renderers draw the same frames; the terminal target
+and Metal follow. `example/triangle` draws a spinning colour triangle in an X11
+window, the first step.
 
 ```sh
 make -C example/triangle run    # needs gfortran, glslc, libxcb and a Vulkan driver
 ```
 
 Escape, q or closing the window ends it.
+
+## Tests
+
+```sh
+fo test        # or: fpm test
+```
+
+`test_render` draws one frame with every primitive on the CPU, checks exact
+pixels, and draws it again with Vulkan offscreen: both frames agree within one
+level per channel (on an NVIDIA GPU and on Mesa's lavapipe). Without a Vulkan
+device the GPU half is reported as not run, unless `FORTGFX_REQUIRE_GPU` is
+set, as in CI. `test_vulkan_layout` checks every Vulkan structure's size
+against `vulkan_core.h`.
