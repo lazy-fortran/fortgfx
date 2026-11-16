@@ -784,12 +784,12 @@ module fortgfx_vulkan
     end interface
 
     interface
-        type(c_ptr) function dlopen(name, flags) bind(C)
+        type(c_ptr) function dlopen(name, flags) bind(C, name="fortgfx_dlopen")
             import :: c_ptr, c_char, c_int
             character(kind=c_char), intent(in) :: name(*)
             integer(c_int), value :: flags
         end function
-        type(c_funptr) function dlsym(handle, name) bind(C)
+        type(c_funptr) function dlsym(handle, name) bind(C, name="fortgfx_dlsym")
             import :: c_ptr, c_funptr, c_char
             type(c_ptr), value :: handle
             character(kind=c_char), intent(in) :: name(*)
@@ -803,7 +803,15 @@ contains
     logical function vk_open_loader()
         !! Opens the system's Vulkan loader; false when there is none.
         type(c_ptr) :: lib
+#ifdef _WIN32
+        lib = dlopen("vulkan-1.dll" // c_null_char, 2_c_int)
+#elif defined(__APPLE__)
+        ! Native AppKit presentation uses the CPU scene renderer.
+        vk_open_loader = .false.
+        return
+#else
         lib = dlopen("libvulkan.so.1" // c_null_char, 2_c_int)
+#endif
         vk_open_loader = c_associated(lib)
         if (.not. vk_open_loader) return
         call c_f_procpointer(dlsym(lib, "vkGetInstanceProcAddr" // c_null_char), &

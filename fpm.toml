@@ -16,3 +16,13 @@ auto-tests = true
 implicit-typing = false
 implicit-external = false
 source-form = "free"
+
+[preprocess]
+cpp.suffixes = ["f90"]
+
+[features]
+platform.macos.preprocess.cpp.macros = ["__APPLE__"]
+platform.windows.preprocess.cpp.macros = ["_WIN32"]
+
+[profiles]
+default = ["platform"]
