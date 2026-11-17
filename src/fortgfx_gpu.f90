@@ -1027,14 +1027,25 @@ contains
     subroutine gpu_close(g)
         type(gfx_gpu_t), intent(inout) :: g
         integer :: k
-        if (.not. c_associated(g%device)) return
+        if (.not. c_associated(g%device)) then
+            if (c_associated(g%instance)) then
+                if (g%surface /= 0) call vkDestroySurfaceKHR(g%instance, g%surface, c_null_ptr)
+                call vkDestroyInstance(g%instance, c_null_ptr)
+                g%instance = c_null_ptr
+            end if
+            return
+        end if
         if (vkDeviceWaitIdle(g%device) /= VK_SUCCESS) continue
-        do k = 1, size(g%textures)
-            call gpu_texture_release(g, k)
-        end do
-        do k = 1, size(g%layers)
-            call free_buffer(g, g%layers(k)%buf)
-        end do
+        if (allocated(g%textures)) then
+            do k = 1, size(g%textures)
+                call gpu_texture_release(g, k)
+            end do
+        end if
+        if (allocated(g%layers)) then
+            do k = 1, size(g%layers)
+                call free_buffer(g, g%layers(k)%buf)
+            end do
+        end if
         call free_buffer(g, g%shapes)
         call free_buffer(g, g%verts)
         call free_buffer(g, g%idx)
@@ -1065,6 +1076,7 @@ contains
         call vkDestroyInstance(g%instance, c_null_ptr)
         g%active = .false.
         g%device = c_null_ptr
+        g%instance = c_null_ptr
     end subroutine gpu_close
 
 end module fortgfx_gpu
