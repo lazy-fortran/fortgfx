@@ -146,7 +146,8 @@ contains
         integer, intent(in) :: clip(4)
         real :: geo(4), fill(4), stroke(4), p(4), lo(2), hi(2), a(2), bb(2), c(2), d, rad
         real :: xf(4), extra(4)
-        integer :: kind, x0, x1, y0, y1, x, y
+        integer :: kind, x0, x1, y0, y1, x, y, k
+        integer(int8) :: q(4)
         real :: px(2), out(4)
         geo = s(1:4)
         fill = s(5:8)
@@ -183,6 +184,18 @@ contains
         x1 = min(int(ceiling(hi(1) - 0.5)) - 1, clip(1) + clip(3) - 1, r%width - 1)
         y0 = max(int(ceiling(lo(2) - 0.5)), clip(2), 0)
         y1 = min(int(ceiling(hi(2) - 0.5)) - 1, clip(2) + clip(4) - 1, r%height - 1)
+        ! An opaque plain rectangle blends to exactly its own colour, so its
+        ! pixels take that colour without shading and blending each one.
+        if (kind == GFX_RECT .and. p(4) <= 0.5 .and. p(1) <= 0.0 .and. p(2) <= 0.0 .and. &
+            fill(4) >= 1.0) then
+            q = unorm(premul(fill, 1.0))
+            do y = y0, y1
+                do k = 1, 4
+                    r%rgba(k, x0 + 1:x1 + 1, y + 1) = q(k)
+                end do
+            end do
+            return
+        end if
         do y = y0, y1
             do x = x0, x1
                 px = [x + 0.5, y + 0.5]
